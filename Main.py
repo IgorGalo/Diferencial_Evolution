@@ -1,9 +1,36 @@
 from grafo import Grafo
 from Elitismo import Elitismo
-
+from processo import processo
 
 def executar():
-    grafo =Grafo("dados/sgb128_dist.txt")
+    """grafo =Grafo("easy.txt")"""
+    num_maquinas = 0
+    lendo_tabela = False
+    processos = []
+    nome_arquivo = 'easy.txt'
+    with open(nome_arquivo, 'r', encoding = 'utf-8') as f:
+        linhas = f.readlines()
+        contador =0
+        for linha in linhas:
+            
+            linhas = linha.strip()
+
+            if linha.startswith("Número de Máquinas:"):
+                num_maquinas = int(linha.split(":")[1].strip())
+
+            elif linha.startswith("ID_Tarefa"):
+                lendo_tabela = True
+                continue
+
+            elif lendo_tabela:
+                processos.append(processo(
+                    linha.split()[0],
+                    linha.split()[1]
+                ))   
+                print(processos[contador].toString())
+                contador = contador + 1
+
+
     elitismo = Elitismo(
         grafo,
         tamanho_populacao=200,
