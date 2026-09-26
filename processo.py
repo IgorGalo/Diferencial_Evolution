@@ -27,10 +27,7 @@ class Processo:
                     dados = linha_limpa.split()
                     
                     if len(dados) >= 2:
-                        processos.append(Processo(
-                            id=dados[0],
-                            tempo=dados[1]
-                        ))   
+                        processos.append(Processo(dados[0], int(dados[1])))  
             return processos
 
     def toString(self):

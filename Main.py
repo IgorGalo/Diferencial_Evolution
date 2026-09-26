@@ -6,20 +6,47 @@ from Maquina import Maquina
 
 def executar():
 
-    num_tarefas, num_maquinas = lerDados("hard.txt")
+    dif = int(input("Selecione o arquivo dentre as opções -\n1 - Fácil\n2- Médio\n3- Difícil\n: ")) 
+    match dif:
+        case 1:
+            dif = "easy.txt"
+        case 2:
+            dif = "medium.txt"
+        case 3:
+            dif = "hard.txt"
+
+    num_tarefas, num_maquinas = lerDados(dif)
     print(f"numero de maquinas: {num_maquinas}")
     print(f"numero de tarefas: {num_tarefas}")
-    processos = Processo().lerProcessos("hard.txt")
 
-    maquinas = Maquina().lerMaquinas("medium.txt")
-    
+    maquinas = []
+    if(dif == "medium.txt"):
+            maquinas = Maquina().lerMaquinas(dif)
+    else:
+        for i in range(num_maquinas):
+            maquinas.append(Maquina(id = i))
 
-
-    """for processo in processos:
+    processos = Processo().lerProcessos(dif)
+    for processo in processos:
         print(processo.toString())
+    
+    for processo in processos:
+        menor_custo = float('inf')
+        maquina_escolhida = None
+
+        for maquina in maquinas:
+            custo = maquina.custo()
+
+            if maquina.capacidade is None or len(maquina.processos) < maquina.capacidade:
+                if custo < menor_custo:
+                    menor_custo = custo
+                    maquina_escolhida = maquina
+
+        maquina_escolhida.processos.append(processo)
 
     for maquina in maquinas:
-            print(maquina.toString())"""
+            print(maquina.toString())
+
 
     """elitismo = Elitismo(
         grafo,
