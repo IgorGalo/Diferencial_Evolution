@@ -16,8 +16,6 @@ def executar():
             dif = "hard.txt"
 
     num_tarefas, num_maquinas = lerDados(dif)
-    print(f"numero de maquinas: {num_maquinas}")
-    print(f"numero de tarefas: {num_tarefas}")
 
     maquinas = []
     if(dif == "medium.txt"):
@@ -27,8 +25,8 @@ def executar():
             maquinas.append(Maquina(id = i))
 
     processos = Processo().lerProcessos(dif)
-    for processo in processos:
-        print(processo.toString())
+    """for processo in processos:
+        print(processo.toString())"""
     
     for processo in processos:
         menor_custo = float('inf')
@@ -37,15 +35,19 @@ def executar():
         for maquina in maquinas:
             custo = maquina.custo()
 
-            if maquina.capacidade is None or len(maquina.processos) < maquina.capacidade:
+            if maquina.capacidade is None or processo.tempo <= maquina.capacidade:
                 if custo < menor_custo:
                     menor_custo = custo
                     maquina_escolhida = maquina
 
+        if maquina_escolhida is None:
+            print(f"Não foi possível alocar o processo {processo.id}")
+            continue
+
         maquina_escolhida.processos.append(processo)
 
-    for maquina in maquinas:
-            print(maquina.toString())
+    """for maquina in maquinas:
+            print(maquina.toString())"""
 
 
     """elitismo = Elitismo(
