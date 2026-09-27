@@ -11,7 +11,8 @@ class DiferencialEvolutivo:
         tamanho_populacao=20,
         geracoes=50,
         F=0.8,
-        CR=0.7
+        CR=0.7,
+        arquivo = ""
     ):
         self.processos = processos
         self.maquinas = maquinas
@@ -23,6 +24,7 @@ class DiferencialEvolutivo:
         self.CR = CR
         self.numero_tarefas = len(processos)
         self.numero_maquinas = len(maquinas)
+        self.arquivo = arquivo
 
     def criar_populacao(self):
         populacao = []
@@ -94,6 +96,20 @@ class DiferencialEvolutivo:
         return Representacao(cromossomo)
 
     def mutacao(self, x1, x2, x3):
+        mutante = []
+
+        for i in range(self.numero_tarefas):
+            valor = x1.cromossomo[i] + self.F * (
+                x2.cromossomo[i] - x3.cromossomo[i]
+            )
+
+            valor = self.discretizacao(valor)
+
+            mutante.append(valor)
+
+        return Representacao(mutante)
+
+    def mutacaoMedium(self, x1, x2, x3):
         """
         Mutação diferencial adaptada para representação discreta.
 
@@ -117,6 +133,16 @@ class DiferencialEvolutivo:
             mutante.append(valor)
 
         return Representacao(mutante)
+
+    def discretizacao(self, valor):
+        valor = round(valor)
+
+        if valor < 1:
+            valor = 1
+        elif valor > self.numero_maquinas:
+            valor = self.numero_maquinas
+
+        return valor
 
     def crossover(self, alvo, mutante):
         """
@@ -162,6 +188,7 @@ class DiferencialEvolutivo:
             key=lambda individuo:
             individuo.valor_objetivo
         )
+        self.melhor_inicial = melhor.copiar()
 
         for geracao in range(1, self.geracoes + 1):
             nova_populacao = []
@@ -179,11 +206,18 @@ class DiferencialEvolutivo:
                 x2 = populacao[r2]
                 x3 = populacao[r3]
                 # Mutação diferencial
-                mutante = self.mutacao(
-                    x1,
-                    x2,
-                    x3
-                )
+                if self.arquivo == "medium.txt":
+                    mutante = self.mutacaoMedium(
+                        x1,
+                        x2,
+                        x3
+                    )
+                else: 
+                    mutante = self.mutacao(
+                        x1,
+                        x2,
+                        x3
+                    )
                 # Crossover
                 candidato = self.crossover(
                     alvo,
