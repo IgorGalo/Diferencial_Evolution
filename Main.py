@@ -1,3 +1,5 @@
+import random
+
 from grafo import Grafo
 from Elitismo import Elitismo
 from Processo import Processo
@@ -6,7 +8,13 @@ from Maquina import Maquina
 
 def executar():
 
-    dif = int(input("Selecione o arquivo dentre as opções -\n1 - Fácil\n2- Médio\n3- Difícil\n: ")) 
+    dif = int(input(
+        "Selecione o arquivo dentre as opções -\n"
+        "1 - Fácil\n"
+        "2 - Médio\n"
+        "3 - Difícil\n: "
+    ))
+
     match dif:
         case 1:
             dif = "easy.txt"
@@ -18,50 +26,54 @@ def executar():
     num_tarefas, num_maquinas = lerDados(dif)
 
     maquinas = []
-    if(dif == "medium.txt"):
-            maquinas = Maquina().lerMaquinas(dif)
+
+    if dif == "medium.txt":
+        maquinas = Maquina().lerMaquinas(dif)
     else:
         for i in range(num_maquinas):
-            maquinas.append(Maquina(id = i))
+            maquinas.append(Maquina(id=i+1))
 
     processos = Processo().lerProcessos(dif)
-    """for processo in processos:
-        print(processo.toString())"""
+
+    tamanho_populacao = 20
+    populacao = []
+
+    for i in range(tamanho_populacao):
+        individuo = gerar_individuo(processos, maquinas)
+        populacao.append(individuo)
+
+    for i, individuo in enumerate(populacao):
+        print(f"Indivíduo {i + 1}: {individuo}")
+
     
+
+def gerar_individuo(processos, maquinas):
+    individuo = []
+
     for processo in processos:
-        menor_custo = float('inf')
-        maquina_escolhida = None
+
+        maquinas_validas = []
 
         for maquina in maquinas:
-            custo = maquina.custo()
+            if (
+                maquina.capacidade is None
+                or processo.tempo <= maquina.capacidade
+            ):
+                maquinas_validas.append(maquina)
 
-            if maquina.capacidade is None or processo.tempo <= maquina.capacidade:
-                if custo < menor_custo:
-                    menor_custo = custo
-                    maquina_escolhida = maquina
+        maquina = random.choice(maquinas_validas)
 
-        if maquina_escolhida is None:
-            print(f"Não foi possível alocar o processo {processo.id}")
-            continue
+        individuo.append(maquina.id)
 
-        maquina_escolhida.processos.append(processo)
+    return individuo
 
-    """for maquina in maquinas:
-            print(maquina.toString())"""
+def gerar_mutante(populacao):
+    individuos = random.sample(populacao, 3)
 
-
-    """elitismo = Elitismo(
-        grafo,
-        tamanho_populacao=200,
-        geracoes=2000,
-        taxa_cruzamento=0.85,
-        taxa_mutacao=0.02
-    )
-    melhor_solucao = elitismo.executar()
-    print("\nMelhor solução encontrada:")
-    print(melhor_solucao)
-    print(f"Custo final: {melhor_solucao.valor_objetivo:.2f}")
-"""
+    x_r1 = individuos[0]
+    x_r2 = individuos[1]
+    x_r3 = individuos[2]
+    
 
 def lerDados(nome_arquivo):
     num_tarefas = 0
