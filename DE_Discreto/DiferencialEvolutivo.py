@@ -27,7 +27,19 @@ class DiferencialEvolutivo:
     def criar_populacao(self):
         populacao = []
 
-        for _ in range(self.tamanho_populacao):
+        if any(
+            maquina.capacidade is not None
+            for maquina in self.maquinas
+        ):
+            individuo_guloso = self.criar_individuo_guloso()
+            individuo_guloso.valor_objetivo = FuncaoObjetivo.calcular(
+                individuo_guloso,
+                self.processos,
+                self.maquinas
+            )
+            populacao.append(individuo_guloso)
+
+        for _ in range(self.tamanho_populacao - len(populacao)):
             individuo = Representacao(
                 numero_tarefas=self.numero_tarefas,
                 numero_maquinas=self.numero_maquinas,
@@ -41,6 +53,45 @@ class DiferencialEvolutivo:
             )
             populacao.append(individuo)
         return populacao
+
+    def criar_individuo_guloso(self):
+        cromossomo = [None] * self.numero_tarefas
+        cargas = {
+            maquina.id: 0
+            for maquina in self.maquinas
+        }
+        indices_tarefas = sorted(
+            range(self.numero_tarefas),
+            key=lambda indice: self.processos[indice].tempo,
+            reverse=True
+        )
+
+        for indice in indices_tarefas:
+            processo = self.processos[indice]
+            maquinas_validas = [
+                maquina
+                for maquina in self.maquinas
+                if (
+                    maquina.capacidade is None
+                    or processo.tempo <= maquina.capacidade
+                )
+            ]
+            menor_carga = min(
+                cargas[maquina.id]
+                for maquina in maquinas_validas
+            )
+            maquinas_menos_carregadas = [
+                maquina
+                for maquina in maquinas_validas
+                if cargas[maquina.id] == menor_carga
+            ]
+            maquina_escolhida = random.choice(
+                maquinas_menos_carregadas
+            )
+            cromossomo[indice] = maquina_escolhida.id
+            cargas[maquina_escolhida.id] += processo.tempo
+
+        return Representacao(cromossomo)
 
     def mutacao(self, x1, x2, x3):
         """
