@@ -1,10 +1,18 @@
 class FuncaoObjetivo:
 
     @staticmethod
-    def calcular(individuo, grafo):
-        rota = individuo.cromossomo
-        distancia = 0
-        for origem, destino in zip(rota, rota[1:] + rota[:1]):
-            distancia += grafo.distancia(origem, destino)
+    def calcular(individuo, processos, maquinas):
+        cargas = {}
 
-        return distancia
+        for maquina in maquinas:
+            cargas[maquina.id] = 0
+
+        for i, maquina_id in enumerate(
+            individuo.cromossomo
+        ):
+            processo = processos[i]
+
+            cargas[maquina_id] += processo.tempo
+        makespan = max(cargas.values())
+
+        return makespan
