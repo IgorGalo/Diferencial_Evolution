@@ -8,12 +8,7 @@ O projeto foi desenvolvido para a disciplina de **Inteligência Artificial**, co
 
 Dado um conjunto de tarefas com diferentes tempos de processamento e um conjunto de máquinas, cada tarefa deve ser atribuída a uma única máquina.
 
-O objetivo é encontrar uma distribuição que minimize:
-
-\[
-C_{max} = \max(\text{carga das máquinas})
-\]
-
+O objetivo é encontrar uma distribuição que minimize o makespan.
 onde a carga de uma máquina é a soma dos tempos das tarefas atribuídas a ela.
 
 O projeto utiliza três instâncias:
@@ -66,7 +61,7 @@ Nova população
 A mutação diferencial apresentada no material da disciplina é:
 
 \[
-V_i = X_{r1} + F(X_{r2} - X_{r3})
+V_i = X_r1 + F(X_r2 - X_r3)
 \]
 
 onde:
@@ -100,17 +95,7 @@ Também é garantida pelo menos uma posição proveniente do vetor-mutante.
 
 O problema é de minimização.
 
-Para cada indivíduo, o candidato é comparado ao indivíduo-alvo:
-
-\[
-X_i^{novo} =
-\begin{cases}
-U_i, & \text{se } f(U_i) \leq f(X_i) \\
-X_i, & \text{caso contrário}
-\end{cases}
-\]
-
-Assim, uma solução candidata só substitui a solução atual quando possui makespan menor ou igual.
+Para cada indivíduo, o candidato é comparado ao indivíduo-alvo, assim, uma solução candidata só substitui a solução atual quando possui makespan menor ou igual.
 
 ## Inicialização da população
 
