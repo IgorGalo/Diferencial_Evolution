@@ -1,14 +1,15 @@
-# Differential Evolution — Alocação de Tarefas em Máquinas Paralelas
+Differential Evolution — Alocação de Tarefas em Máquinas Paralelas
 
 Implementação de uma metaheurística baseada em **Differential Evolution (DE)** para resolver o problema de alocação de tarefas em máquinas paralelas, buscando minimizar o **makespan** — o tempo em que a última máquina termina sua execução.
 
 O projeto foi desenvolvido para a disciplina de **Inteligência Artificial**, com base no conteúdo apresentado em aula sobre **Evolução Diferencial**.
 
-## Problema
+Problema
 
 Dado um conjunto de tarefas com diferentes tempos de processamento e um conjunto de máquinas, cada tarefa deve ser atribuída a uma única máquina.
 
 O objetivo é encontrar uma distribuição que minimize o makespan.
+onde a carga de uma máquina é a soma dos tempos das tarefas atribuídas a ela.
 
 O projeto utiliza três instâncias, com diferentes níveis de dificuldade:
 
@@ -16,34 +17,30 @@ O projeto utiliza três instâncias, com diferentes níveis de dificuldade:
 - **Medium** — 50 tarefas e 6 máquinas com capacidades diferentes.
 - **Hard** — 40 tarefas e 5 máquinas idênticas, com restrições de precedência e não-preempção.
 
-## Representação da solução
+Representação da solução
 
-Cada indivíduo representa **uma solução completa de alocação**.
+Cada indivíduo representa uma solução completa de alocação.
 
 O cromossomo possui uma posição para cada tarefa:
 
-```text
 [2, 5, 1, 3, 2, ...]
-```
 
 Por exemplo:
 
-```text
 posição 1 → Tarefa 1 → Máquina 2
 posição 2 → Tarefa 2 → Máquina 5
 posição 3 → Tarefa 3 → Máquina 1
-```
 
 Assim:
 
-- a dimensão `D` do indivíduo corresponde ao número de tarefas;
-- cada gene representa a máquina atribuída à respectiva tarefa.
+a dimensão D do indivíduo corresponde ao número de tarefas;
 
-## Differential Evolution
+cada gene representa a máquina atribuída à respectiva tarefa.
+
+Differential Evolution
 
 O fluxo utilizado segue as principais etapas do DE:
 
-```text
 População inicial
         ↓
 Mutação diferencial
@@ -55,7 +52,6 @@ Avaliação
 Seleção
         ↓
 Nova população
-```
 
 A mutação diferencial apresentada no material da disciplina é:
 
@@ -65,14 +61,17 @@ V_i = X_{r1} + F(X_{r2} - X_{r3})
 
 onde:
 
-- `Xr1` é o vetor-base;
-- `Xr2` e `Xr3` são indivíduos distintos;
-- `F` é o fator de mutação;
-- `V` é o vetor mutante.
+Xr1 é o vetor-base;
+
+Xr2 e Xr3 são indivíduos distintos;
+
+F é o fator de mutação;
+
+V é o vetor mutante.
 
 Como o problema utiliza máquinas representadas por valores inteiros, a implementação utiliza **discretização** para converter os valores gerados pela mutação em identificadores de máquinas válidos.
 
-## Adaptação para a instância Medium
+Adaptação para a instância Medium
 
 A instância `medium` possui máquinas com capacidades diferentes. As capacidades utilizadas são limites para o **tempo individual da tarefa** que cada máquina pode executar.
 
@@ -113,12 +112,13 @@ Por esse motivo, na instância `hard`, o makespan pode ser maior que a maior som
 ## Crossover
 
 Após a mutação, o vetor-alvo e o vetor-mutante são combinados por crossover binomial.
+Após a mutação, o vetor-alvo e o vetor-mutante são combinados por crossover binomial.
 
-O parâmetro `CR` controla a probabilidade de uma posição do filho ser herdada do vetor-mutante.
+O parâmetro CR controla a probabilidade de uma posição do filho ser herdada do vetor-mutante.
 
 Também é garantida pelo menos uma posição proveniente do vetor-mutante.
 
-## Seleção
+Seleção
 
 O problema é de minimização.
 
@@ -130,56 +130,66 @@ candidato.valor_objetivo <= alvo.valor_objetivo
 
 O terminal também informa a quantidade de candidatos **aceitos** em cada geração, isto é, quantos candidatos substituíram seus respectivos indivíduos-alvo.
 
-## Inicialização da população
+O terminal também informa a quantidade de candidatos aceitos em cada geração, isto é, quantos candidatos substituíram seus respectivos indivíduos-alvo.
 
 Para as instâncias sem restrições de capacidade, a população é formada por soluções geradas aleatoriamente.
 
 Na instância `medium`, além dos indivíduos aleatórios, é incluído um indivíduo gerado por uma heurística gulosa, construído respeitando as capacidades das máquinas.
 
-## Parâmetros
+Parâmetros
 
 Os principais parâmetros utilizados pelo algoritmo são:
 
-| Parâmetro | Descrição |
-|---|---|
-| `NP` | Tamanho da população |
-| `F` | Fator de mutação |
-| `CR` | Taxa de crossover |
-| `geracoes` | Número máximo de gerações |
+Parâmetro
+
+Descrição
+
+NP
+
+Tamanho da população
+
+F
+
+Fator de mutação
+
+CR
+
+Taxa de crossover
+
+geracoes
+
+Número máximo de gerações
 
 Exemplo de configuração:
 
-```python
 de = DiferencialEvolutivo(
     processos,
     maquinas,
     tamanho_populacao=20,
     geracoes=1000,
+    geracoes=1000,
     F=0.8,
     CR=0.9
 )
-```
 
-## Execução
+Execução
 
 Certifique-se de possuir uma instalação compatível com **Python 3**.
 
 Execute:
 
-```bash
 python Main.py
-```
 
 O programa solicita a instância desejada:
 
-```text
 1 - Fácil
 2 - Médio
 3 - Difícil
 Ou 0 para Sair
-```
 
 Em seguida, informa-se a quantidade de gerações a ser executada.
+
+Durante a execução, o terminal apresenta a evolução do melhor makespan e a quantidade de candidatos aceitos em cada geração.
 
 Durante a execução, o terminal apresenta a evolução do melhor makespan e a quantidade de candidatos aceitos em cada geração.
 
@@ -194,11 +204,12 @@ Ao final, são apresentados:
 
 Na instância `hard`, também é apresentada uma indicação de que as restrições de não-preempção e precedência foram consideradas.
 
-## Estrutura do projeto
+Na instância hard, também é apresentada uma indicação de que as restrições de não-preempção e precedência foram consideradas.
+
+Estrutura do projeto
 
 Uma organização esperada do projeto é:
 
-```text
 .
 ├── Main.py
 ├── DiferencialEvolutivo.py
@@ -209,12 +220,12 @@ Uma organização esperada do projeto é:
 ├── easy.txt
 ├── medium.txt
 └── hard.txt
-```
 
 Dependendo da organização do repositório, os arquivos da implementação do DE podem estar dentro de um diretório próprio.
 
-## Resultados de exemplo
+Resultados de exemplo
 
+Os resultados são estocásticos e podem variar entre execuções.
 Os resultados são estocásticos e podem variar entre execuções.
 
 Em uma execução com **1000 gerações**, foram obtidos os seguintes resultados:
@@ -303,7 +314,8 @@ A instância `hard` utiliza uma avaliação específica que constrói o cronogra
 A escolha dos parâmetros (`NP`, `F`, `CR` e número de gerações) influencia a exploração do espaço de soluções e o tempo de execução.
 
 Como o algoritmo utiliza operações aleatórias, recomenda-se executar cada instância mais de uma vez para observar a variação dos resultados.
+Como o algoritmo utiliza operações aleatórias, recomenda-se executar cada instância mais de uma vez para observar a variação dos resultados.
 
-## Referência
+Referência
 
-Projeto desenvolvido para a disciplina de **Inteligência Artificial — UFSJ**, utilizando como referência o conteúdo apresentado em aula sobre **Evolução Diferencial (Differential Evolution)**.
+Projeto desenvolvido para a disciplina de Inteligência Artificial — UFSJ, utilizando como referência o conteúdo apresentado em aula sobre Evolução Diferencial (Differential Evolution).
