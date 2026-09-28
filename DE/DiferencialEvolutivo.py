@@ -1,7 +1,7 @@
 import random
 
-from DE.Representacao import Representacao
-from DE.FuncaoObjetivo import FuncaoObjetivo
+from Representacao import Representacao
+from FuncaoObjetivo import FuncaoObjetivo
 
 class DiferencialEvolutivo:
     def __init__(
