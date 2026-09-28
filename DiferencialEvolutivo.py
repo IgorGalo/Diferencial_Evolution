@@ -110,26 +110,23 @@ class DiferencialEvolutivo:
         return Representacao(mutante)
 
     def mutacaoMedium(self, x1, x2, x3):
-        """
-        Mutação diferencial adaptada para representação discreta.
 
-        Para cada tarefa:
-
-        x1 = indivíduo base
-        x2 = indivíduo diferencial 1
-        x3 = indivíduo diferencial 2
-        """
         mutante = []
 
         for i in range(self.numero_tarefas):
+
             valor = x1.cromossomo[i]
-            # Aplica a diferença entre x2 e x3
+
             if random.random() < self.F:
+
                 if x2.cromossomo[i] != x3.cromossomo[i]:
-                    valor = random.choice([
-                        x2.cromossomo[i],
-                        x3.cromossomo[i]
-                    ])
+
+                    valor = x2.cromossomo[i]
+
+                else:
+
+                    valor = x1.cromossomo[i]
+
             mutante.append(valor)
 
         return Representacao(mutante)
@@ -181,6 +178,39 @@ class DiferencialEvolutivo:
             )
         )
 
+
+    def reparar(self, individuo):
+        for i, maquina_id in enumerate(individuo.cromossomo):
+
+            processo = self.processos[i]
+
+            maquina = next(
+                maquina
+                for maquina in self.maquinas
+                if maquina.id == maquina_id
+            )
+
+            # Verifica se a máquina consegue executar a tarefa
+            if (
+                maquina.capacidade is not None
+                and processo.tempo > maquina.capacidade
+            ):
+
+                maquinas_validas = [
+                    maquina
+                    for maquina in self.maquinas
+                    if (
+                        maquina.capacidade is None
+                        or processo.tempo <= maquina.capacidade
+                    )
+                ]
+
+                nova_maquina = random.choice(maquinas_validas)
+
+                individuo.cromossomo[i] = nova_maquina.id
+
+        return individuo
+
     def executar(self):
         populacao = self.criar_populacao()
         melhor = min(
@@ -192,6 +222,7 @@ class DiferencialEvolutivo:
 
         for geracao in range(1, self.geracoes + 1):
             nova_populacao = []
+            aceitos = 0
             for i in range(self.tamanho_populacao):
                 alvo = populacao[i]
                 indices = list(
@@ -206,7 +237,7 @@ class DiferencialEvolutivo:
                 x2 = populacao[r2]
                 x3 = populacao[r3]
                 # Mutação diferencial
-                if self.arquivo == "medium.txt":
+                if self.arquivo == "Ex2IA_3/medium.txt":
                     mutante = self.mutacaoMedium(
                         x1,
                         x2,
@@ -223,6 +254,10 @@ class DiferencialEvolutivo:
                     alvo,
                     mutante
                 )
+
+                #reparo de maquinas invalidas
+                candidato = self.reparar(candidato)
+
                 # Avaliação
                 self.avaliar(candidato)
                 # Seleção
@@ -231,6 +266,7 @@ class DiferencialEvolutivo:
                     <= alvo.valor_objetivo
                 ):
                     nova_populacao.append(candidato)
+                    aceitos += 1
                 else:
                     nova_populacao.append(alvo)
             populacao = nova_populacao
@@ -248,6 +284,7 @@ class DiferencialEvolutivo:
                 f"Geração {geracao:3d} | "
                 f"Melhor makespan: "
                 f"{melhor.valor_objetivo:.0f}"
+                f" | Aceitos: {aceitos}"
             )
         print("\n================================")
         print("MELHOR SOLUÇÃO ENCONTRADA")

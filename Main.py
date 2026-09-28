@@ -64,7 +64,7 @@ def executar():
             "1 - Fácil\n"
             "2 - Médio\n"
             "3 - Difícil\n"
-            "Ou 0 para Sair\n: "
+            "0 - para Sair\n: "
         ))
 
         match opcao:
@@ -73,13 +73,13 @@ def executar():
                 break
 
             case 1:
-                arquivo = "easy.txt"
+                arquivo = "Ex2IA_3/easy.txt"
 
             case 2:
-                arquivo = "medium.txt"
+                arquivo = "Ex2IA_3/medium.txt"
 
             case 3:
-                arquivo = "hard.txt"
+                arquivo = "Ex2IA_3/hard.txt"
 
             case _:
                 print("Opção inválida.")
