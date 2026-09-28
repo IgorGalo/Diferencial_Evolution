@@ -73,13 +73,13 @@ def executar():
                 break
 
             case 1:
-                arquivo = "Ex2IA_3/easy.txt"
+                arquivo = "easy.txt"
 
             case 2:
-                arquivo = "Ex2IA_3/medium.txt"
+                arquivo = "medium.txt"
 
             case 3:
-                arquivo = "Ex2IA_3/hard.txt"
+                arquivo = "hard.txt"
 
             case _:
                 print("Opção inválida.")
@@ -145,6 +145,13 @@ def executar():
             maquinas,
             "ATRIBUIÇÃO FINAL"
         )
+
+        if arquivo.endswith("hard.txt"):
+            print("\n================================")
+            print("RESTRIÇÕES CONSIDERADAS")
+            print("================================")
+            print("Não-preempção: tarefas não são interrompidas")
+            print("Precedências: tarefas são executadas somente após a conclusão de suas predecessoras")
 
         print("\n================================")
         print("RESULTADOS")
