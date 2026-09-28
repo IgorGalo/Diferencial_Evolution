@@ -1,6 +1,6 @@
-from processo import Processo
-from Maquina import Maquina
-from DiferencialEvolutivo import DiferencialEvolutivo
+from DE.processo import Processo
+from DE.Maquina import Maquina
+from DE.DiferencialEvolutivo import DiferencialEvolutivo
 
 import os
 

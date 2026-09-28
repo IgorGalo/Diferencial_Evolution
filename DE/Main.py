@@ -1,8 +1,8 @@
 import time
 
-from DiferencialEvolutivo import DiferencialEvolutivo
-from processo import Processo
-from Maquina import Maquina
+from DE.DiferencialEvolutivo import DiferencialEvolutivo
+from DE.processo import Processo
+from DE.Maquina import Maquina
 
 
 def lerDados(nome_arquivo):
