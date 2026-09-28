@@ -3,8 +3,6 @@ class FuncaoObjetivo:
     @staticmethod
     def calcular(individuo, processos, maquinas):
 
-        # Caso normal: fácil e médio
-        # Se não existem prioridades, basta calcular as cargas
         if not any(processo.prioridades for processo in processos):
 
             cargas = {}
@@ -20,7 +18,6 @@ class FuncaoObjetivo:
 
             return max(cargas.values())
 
-        # Caso difícil: existem prioridades
         return FuncaoObjetivo.calcular_com_precedencia(
             individuo,
             processos,
@@ -34,19 +31,16 @@ class FuncaoObjetivo:
         maquinas
     ):
 
-        # Tarefas organizadas pelo ID
         processos_por_id = {
             int(processo.id): processo
             for processo in processos
         }
 
-        # Guarda quem precisa terminar antes de cada tarefa
         predecessoras = {
             tarefa_id: []
             for tarefa_id in processos_por_id
         }
 
-        # Lê as prioridades diretamente do TXT
         for processo in processos:
 
             id_processo = int(processo.id)
@@ -57,16 +51,13 @@ class FuncaoObjetivo:
                     id_processo
                 )
 
-        # Momento em que cada máquina fica livre
         tempo_maquina = {
             maquina.id: 0
             for maquina in maquinas
         }
 
-        # Momento em que cada tarefa terminou
         tempo_fim = {}
 
-        # Tarefas que ainda não foram agendadas
         pendentes = set(
             processos_por_id.keys()
         )
@@ -75,8 +66,6 @@ class FuncaoObjetivo:
 
             tarefas_prontas = []
 
-            # Procura tarefas cujas predecessoras
-            # já terminaram
             for tarefa_id in pendentes:
 
                 preds = predecessoras[tarefa_id]
@@ -92,8 +81,6 @@ class FuncaoObjetivo:
                         individuo.cromossomo[tarefa_id - 1]
                     )
 
-                    # Quando a tarefa poderia começar
-                    # considerando apenas as predecessoras
                     fim_predecessoras = max(
                         (
                             tempo_fim[pred]
@@ -102,7 +89,6 @@ class FuncaoObjetivo:
                         default=0
                     )
 
-                    # A máquina também precisa estar livre
                     inicio = max(
                         tempo_maquina[maquina_id],
                         fim_predecessoras
@@ -117,16 +103,12 @@ class FuncaoObjetivo:
                         )
                     )
 
-            # Se não houver tarefa pronta, existe algum
-            # problema nas precedências
             if not tarefas_prontas:
                 raise ValueError(
                     "Não foi possível respeitar as "
                     "restrições de precedência."
                 )
 
-            # Escolhe a próxima tarefa
-            # menor início primeiro
             inicio, _, tarefa_id, maquina_id = min(
                 tarefas_prontas
             )
@@ -135,13 +117,10 @@ class FuncaoObjetivo:
 
             fim = inicio + processo.tempo
 
-            # Atualiza máquina
             tempo_maquina[maquina_id] = fim
 
-            # Registra término da tarefa
             tempo_fim[tarefa_id] = fim
 
-            # Remove das pendentes
             pendentes.remove(tarefa_id)
 
         return max(tempo_fim.values())
