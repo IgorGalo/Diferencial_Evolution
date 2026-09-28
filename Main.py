@@ -51,7 +51,7 @@ def mostrar_atribuicao(individuo, processos, maquinas, titulo):
         print(
             f"Máquina {maquina.id}: "
             f"Tarefas {tarefas} | "
-            f"Carga total: {carga}"
+            f"Carga de processamento: {carga}"
         )
 
     print(f"Makespan: {individuo.valor_objetivo:.0f}")

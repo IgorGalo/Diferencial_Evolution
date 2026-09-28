@@ -237,7 +237,7 @@ class DiferencialEvolutivo:
                 x2 = populacao[r2]
                 x3 = populacao[r3]
                 # Mutação diferencial
-                if self.arquivo == "Ex2IA_3/medium.txt":
+                if self.arquivo == "medium.txt":
                     mutante = self.mutacaoMedium(
                         x1,
                         x2,
